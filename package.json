@@ -1,0 +1,24 @@
+{
+  "name": "electro",
+  "version": "1.0.0",
+  "description": "shop for affordable price ",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavan636/Electro.git"
+  },
+  "author": "pavantom",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pavan636/Electro/issues"
+  },
+  "homepage": "https://github.com/pavan636/Electro#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
