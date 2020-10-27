@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "shop for affordable price ",
   "main": "server.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "start": "node backend/server",
     "server": "nodemon backend/server",
@@ -23,7 +23,8 @@
   "homepage": "https://github.com/pavan636/Electro#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.10.11"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
