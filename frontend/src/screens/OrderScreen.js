@@ -27,7 +27,7 @@ const OrderScreen = ({ match }) => {
 
   useEffect(() => {
     dispatch(getOrderDetails(orderId))
-  }, [])
+  }, [dispatch, orderId])
 
   return loading ? (
     <Loader />
@@ -77,7 +77,7 @@ const OrderScreen = ({ match }) => {
             </ListGroup.Item>
 
             <ListGroup.Item>
-              <h2>Order Items</h2>
+              <h2>Order Items</h2>   
               {order.orderItems.length === 0 ? (
                 <Message>Order is empty</Message>
               ) : (
