@@ -13,35 +13,38 @@ import {
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
 
 const ProductScreen = ({ history, match }) => {
-    const [qty, setQty] = useState(1)
-    const [rating, setRating] = useState(0)
-    const [comment, setComment] = useState('')
+  const [qty, setQty] = useState(1)
+  const [rating, setRating] = useState(0)
+  const [comment, setComment] = useState('')
 
+  const dispatch = useDispatch()
 
-    const dispatch = useDispatch()
+  const productDetails = useSelector((state) => state.productDetails)
+  const { loading, error, product } = productDetails
 
-    const productDetails = useSelector((state) => state.productDetails)
-    const { loading, error, product } = productDetails
-    const userLogin = useSelector((state) => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
 
-    const productReviewCreate = useSelector((state) => state.productReviewCreate)
-    const {
+  const productReviewCreate = useSelector((state) => state.productReviewCreate)
+  const {
     success: successProductReview,
+    loading: loadingProductReview,
     error: errorProductReview,
   } = productReviewCreate
-    useEffect(() => {
-      if (successProductReview) {
-      alert('Review Submitted!')
+
+  useEffect(() => {
+    if (successProductReview) {
       setRating(0)
       setComment('')
+    }
+    if (!product._id || product._id !== match.params.id) {
+      dispatch(listProductDetails(match.params.id))
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
     }
-    dispatch(listProductDetails(match.params.id))
-  }, [dispatch, match, successProductReview])
+  }, [dispatch, match, product._id, successProductReview])
 
-  const addToCartHandler = () =>{
-      history.push(`/cart/${match.params.id}?qty =${qty}`)
+  const addToCartHandler = () => {
+    history.push(`/cart/${match.params.id}?qty=${qty}`)
   }
 
   const submitHandler = (e) => {
@@ -56,16 +59,16 @@ const ProductScreen = ({ history, match }) => {
 
   return (
     <>
-      <Link className='btn btn-dark my-3' to='/'>
+      <Link className='btn btn-dark  my-3' to='/'>
         Go Back
       </Link>
-       {loading ? (
+      {loading ? (
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (
         <>
-         <Meta title={product.name} />
+          <Meta title={product.name} />
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />
@@ -75,18 +78,17 @@ const ProductScreen = ({ history, match }) => {
                 <ListGroup.Item>
                   <h3>{product.name}</h3>
                 </ListGroup.Item>
-
                 <ListGroup.Item>
-                <Rating
+                  <Rating
                     value={product.rating}
                     text={`${product.numReviews} reviews`}
-                />
+                  />
                 </ListGroup.Item>
                 <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
                 <ListGroup.Item>
                   Description: {product.description}
                 </ListGroup.Item>
-                    </ListGroup>
+              </ListGroup>
             </Col>
             <Col md={3}>
               <Card>
@@ -99,16 +101,17 @@ const ProductScreen = ({ history, match }) => {
                       </Col>
                     </Row>
                   </ListGroup.Item>
-                    
+
                   <ListGroup.Item>
                     <Row>
                       <Col>Status:</Col>
                       <Col>
-                         {product.countInStock > 0 ? 'In Stock' : 'Out Of Stock'}
+                        {product.countInStock > 0 ? 'In Stock' : 'Out Of Stock'}
                       </Col>
                     </Row>
                   </ListGroup.Item>
-                 {product.countInStock > 0 && (
+
+                  {product.countInStock > 0 && (
                     <ListGroup.Item>
                       <Row>
                         <Col>Qty</Col>
@@ -158,9 +161,14 @@ const ProductScreen = ({ history, match }) => {
                     <p>{review.comment}</p>
                   </ListGroup.Item>
                 ))}
-
                 <ListGroup.Item>
                   <h2>Write a Customer Review</h2>
+                  {successProductReview && (
+                    <Message variant='success'>
+                      Review submitted successfully
+                    </Message>
+                  )}
+                  {loadingProductReview && <Loader />}
                   {errorProductReview && (
                     <Message variant='danger'>{errorProductReview}</Message>
                   )}
@@ -190,7 +198,11 @@ const ProductScreen = ({ history, match }) => {
                           onChange={(e) => setComment(e.target.value)}
                         ></Form.Control>
                       </Form.Group>
-                      <Button type='submit' variant='primary'>
+                      <Button
+                        disabled={loadingProductReview}
+                        type='submit'
+                        variant='primary'
+                      >
                         Submit
                       </Button>
                     </Form>
@@ -199,7 +211,6 @@ const ProductScreen = ({ history, match }) => {
                       Please <Link to='/login'>sign in</Link> to write a review{' '}
                     </Message>
                   )}
-                  
                 </ListGroup.Item>
               </ListGroup>
             </Col>
